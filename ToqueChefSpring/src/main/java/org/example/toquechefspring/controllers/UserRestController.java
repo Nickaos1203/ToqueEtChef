@@ -2,6 +2,7 @@ package org.example.toquechefspring.controllers;
 
 import org.example.toquechefspring.models.User;
 import org.example.toquechefspring.repositories.UserRepository;
+import org.example.toquechefspring.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,14 +28,20 @@ public class UserRestController {
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User newUser = userRepository.save(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+
+        // exception si le "first name" comprend moins de 2 caractères
+        if(user.getFirstName().length() > 2) {
+            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        } else throw new IllegalArgumentException("Your first name is too short");
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
         // retourne-le "user" s'il existe sinon affiche la réponse "not found"
-        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        // return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseThrow(() -> new UserNotFoundException("user not found"));
     }
 
     @PutMapping("/{id}")
@@ -53,7 +60,8 @@ public class UserRestController {
             return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         }
         // si le "user" n'existe pas, on envoie une réponse "not found"
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        throw new UserNotFoundException("user not found");
     }
 
     @DeleteMapping("/{id}")
@@ -64,6 +72,7 @@ public class UserRestController {
             userRepository.delete(user.get());
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        throw new UserNotFoundException("user not found");
     }
 }
