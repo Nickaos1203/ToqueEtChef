@@ -9,8 +9,7 @@ import java.util.List;
 
 @Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "recipes") //renommer le nom de la table
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

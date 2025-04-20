@@ -9,8 +9,7 @@ import java.util.List;
 
 @Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +27,5 @@ public class User {
     // Un utilisateur peut rédiger plusieurs commentaires
     @OneToMany(mappedBy = "user")
     private List<Recipe> comments;
+
 }
