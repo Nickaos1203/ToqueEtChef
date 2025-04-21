@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "steps")
 public class Step {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
